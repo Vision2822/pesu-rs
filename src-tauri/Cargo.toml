@@ -1,0 +1,44 @@
+# Source: https://v2.tauri.app/reference/config/
+# Source: https://docs.rs/reqwest/0.13.5/reqwest/tls/index.html
+[package]
+name = "pesu-rs"
+version = "0.1.0"
+description = "PESU Academy Course Materials Downloader"
+edition = "2024"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "sync", "time"] }
+futures = "0.3"
+scraper = "0.27"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+base64 = "0.22"
+regex-lite = "0.1"
+
+# Linux: Ring crypto provider avoids ~4MB aws-lc-rs C/assembly bloat
+[target.'cfg(target_os = "linux")'.dependencies]
+keyring = { version = "=3.6.3", default-features = false, features = ["linux-native-sync-persistent", "crypto-rust"] }
+reqwest = { version = "0.13", default-features = false, features = ["rustls-no-provider", "cookies", "stream", "form"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+
+# macOS: Ring crypto provider avoids ~4MB aws-lc-rs bloat
+[target.'cfg(target_os = "macos")'.dependencies]
+keyring = { version = "=3.6.3", default-features = false, features = ["apple-native"] }
+reqwest = { version = "0.13", default-features = false, features = ["rustls-no-provider", "cookies", "stream", "form"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "tls12"] }
+
+# Windows: native-tls uses OS SChannel (near 0 KB overhead, zero NASM requirement)
+[target.'cfg(target_os = "windows")'.dependencies]
+keyring = { version = "=3.6.3", default-features = false, features = ["windows-native"] }
+reqwest = { version = "0.13", default-features = false, features = ["native-tls", "cookies", "stream", "form", "query"] }
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "z"
+panic = "abort"
+strip = true

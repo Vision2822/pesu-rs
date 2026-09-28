@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>pesu-rs</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app-container" class="container">
+    <header class="topbar">
+      <div class="brand-group">
+        <span class="brand-title">pesu-rs</span>
+        <span class="badge-version">v0.1.0</span>
+      </div>
+      <button id="signout-btn" class="btn btn-sm hidden">Sign Out</button>
+    </header>
+
+    <main id="login-card" class="card">
+      <div class="card-header">
+        <h1 class="card-title">Sign In</h1>
+        <p class="card-desc">Enter your credentials to access course portal</p>
+      </div>
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label for="srn-input">Student Registration Number</label>
+          <input id="srn-input" type="text" placeholder="PES1UG..." autocomplete="username" spellcheck="false" required />
+        </div>
+        <div class="form-group">
+          <label for="password-input">Password</label>
+          <input id="password-input" type="password" placeholder="Password" autocomplete="current-password" required />
+        </div>
+        <div class="form-row">
+          <label class="checkbox"><input id="remember-me" type="checkbox" /><span>Remember me</span></label>
+          <button id="forget-btn" type="button" class="link hidden">Forget saved</button>
+        </div>
+        <div id="error-banner" class="error-box hidden" role="alert"></div>
+        <button id="login-btn" type="submit" class="btn btn-primary w-full">
+          <span class="btn-text">Sign In</span><span class="spinner hidden"></span>
+        </button>
+      </form>
+    </main>
+
+    <section id="auth-dashboard" class="app-shell hidden">
+      <nav class="sidebar" id="sidebar">
+        <div id="nav-indicator" class="nav-indicator"></div>
+        <button class="nav-item active" data-view="home"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>Home</button>
+        <button class="nav-item" data-view="timetable"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Timetable</button>
+        <button class="nav-item" data-view="seating"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>Seating</button>
+        <button class="nav-item" data-view="attendance"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Attendance</button>
+        <button class="nav-item" data-view="results"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Results</button>
+        <button class="nav-item" data-view="courses"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Courses</button>
+        <div class="nav-sep"></div>
+        <button class="nav-item" data-view="settings"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z"/><path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Settings</button>
+        <button class="nav-item" data-view="credits"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>Credits</button>
+      </nav>
+
+      <main class="content-area">
+        <div id="view-card" class="card view-card">
+          <div id="view-content" class="view-content">
+            <div class="view-inner active" data-view="home">
+              <div class="card-header"><h1 id="home-welcome" class="card-title">Welcome</h1><p class="card-desc">Academic profile details</p></div>
+              <div id="profile-error-banner" class="error-box hidden"></div>
+              <div id="profile-loading-box" class="status-box hidden"><span class="spinner-sm"></span>Loading profile...</div>
+              <div class="meta-table">
+                <div class="meta-row"><span class="meta-label">SRN</span><span id="user-display" class="meta-val">—</span></div>
+                <div class="meta-row"><span class="meta-label">Semester</span><span id="profile-sem" class="meta-val">—</span></div>
+                <div class="meta-row"><span class="meta-label">Course</span><span id="profile-course" class="meta-val">—</span></div>
+              </div>
+            </div>
+
+            <div class="view-inner hidden" data-view="timetable">
+              <div class="card-header"><h1 class="card-title">Timetable</h1><p class="card-desc">Weekly class schedule</p></div>
+              <div id="tt-error" class="error-box hidden"></div>
+              <div id="tt-loading" class="status-box hidden"><span class="spinner-sm"></span>Fetching timetable...</div>
+              <div id="tt-content" class="stack hidden">
+                <div id="tt-meta-bar" class="tt-meta-bar"></div>
+                <div id="tt-day-switch" class="day-switch"></div>
+                <div id="tt-day-list" class="tt-day-list"></div>
+              </div>
+            </div>
+
+            <div class="view-inner hidden" data-view="seating">
+              <div class="card-header"><div class="row-between" style="margin-bottom:0"><div><h1 class="card-title">Seating Info</h1><p class="card-desc">Assessment seating allocation</p></div><button id="seating-reload" class="btn btn-sm">Reload</button></div></div>
+              <div id="seating-error-banner" class="error-box hidden"></div>
+              <div id="seating-loading-box" class="status-box hidden"><span class="spinner-sm"></span>Fetching seating...</div>
+              <div id="seating-content" class="stack">
+                <div id="seating-today" class="seating-today-card hidden">
+                  <div class="seating-today-head">
+                    <span class="seating-today-badge">Today</span>
+                    <span class="seating-today-label">Current seating</span>
+                  </div>
+                  <div class="seating-today-main">
+                    <div class="seating-today-course" id="today-course">—</div>
+                    <div class="seating-today-meta">
+                      <span class="seat-chip"><span class="seat-chip-k">Date</span><span class="seat-chip-v" id="today-date">—</span></span>
+                      <span class="seat-chip"><span class="seat-chip-k">Block</span><span class="seat-chip-v" id="today-block">—</span></span>
+                      <span class="seat-chip"><span class="seat-chip-k">Terminal</span><span class="seat-chip-v" id="today-terminal">—</span></span>
+                    </div>
+                  </div>
+                </div>
+                <div id="seating-summary" class="att-summary-bar hidden"></div>
+                <div id="seating-empty" class="info-text hidden">No seating details available.</div>
+                <div id="seating-list" class="seating-list"></div>
+              </div>
+            </div>
+
+            <div class="view-inner hidden" data-view="attendance">
+              <div class="card-header"><div class="row-between" style="margin-bottom:0"><div><h1 class="card-title">Attendance</h1><p class="card-desc">Course-wise attendance overview</p></div><button id="att-reload" class="btn btn-sm">Reload</button></div></div>
+              <div id="att-error" class="error-box hidden"></div>
+              <div id="att-loading" class="status-box hidden"><span class="spinner-sm"></span>Fetching attendance...</div>
+              <div id="att-content" class="stack hidden">
+                <div id="att-summary" class="att-summary-bar hidden"></div>
+                <div id="att-list" class="att-list"></div>
+                <div id="att-empty" class="info-text hidden">No attendance data available.</div>
+              </div>
+              <div id="att-needs-sem" class="info-text">Select a semester in Courses tab first, or loading...</div>
+            </div>
+            <div class="view-inner hidden" data-view="results"><div class="placeholder">Coming soon.</div></div>
+
+            <div class="view-inner hidden" data-view="courses">
+              <div class="card-header"><h1 class="card-title">Courses</h1><p class="card-desc">Registered modules by semester</p></div>
+              <div id="sem-error-banner" class="error-box hidden"></div>
+              <div class="form-group"><label for="semester-select">Semester</label><select id="semester-select" class="select"></select></div>
+              <div id="sem-loading-box" class="status-box hidden"><span class="spinner-sm"></span><span id="sem-loading-text">Fetching semesters...</span></div>
+              <button id="load-sem-btn" class="btn btn-sm w-full hidden">Load Semesters</button>
+              <div id="course-section" class="collapse">
+                <div class="collapse-inner">
+                  <div class="divider"></div>
+                  <div class="row-between"><span class="section-title">Courses</span><button id="load-courses-btn" class="btn btn-sm">Reload</button></div>
+                  <div id="course-error-banner" class="error-box hidden"></div>
+                  <div id="course-loading-box" class="status-box hidden"><span class="spinner-sm"></span>Fetching courses...</div>
+                  <div id="course-list" class="course-list"></div>
+                  <div id="no-courses-msg" class="info-text hidden">No courses found.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="view-inner hidden" data-view="settings">
+              <div class="card-header"><h1 class="card-title">Settings</h1><p class="card-desc">Tweak appearance and behavior — lightweight</p></div>
+              <div class="stack">
+                <div class="settings-group">
+                  <div class="settings-label">Appearance</div>
+                  <div class="settings-row"><span class="settings-key">Accent</span><div class="color-dots" id="accent-dots"><button data-accent="#2a7fff" class="color-dot active" style="background:#2a7fff"></button><button data-accent="#e5e5e5" class="color-dot" style="background:#e5e5e5"></button><button data-accent="#a78bfa" class="color-dot" style="background:#a78bfa"></button><button data-accent="#34d399" class="color-dot" style="background:#34d399"></button><button data-accent="#fb7185" class="color-dot" style="background:#fb7185"></button><label class="color-dot custom-color-wrap" title="Custom color"><input type="color" id="custom-accent" class="custom-color-input" value="#2a7fff" /><span class="custom-color-plus">+</span></label></div></div>
+                  <div class="settings-row"><span class="settings-key">Density</span><div class="seg-switch" id="density-switch"><button data-density="compact" class="seg-btn active">Compact</button><button data-density="cozy" class="seg-btn">Cozy</button></div></div>
+                  <div class="settings-row"><span class="settings-key">Font size</span><div class="seg-switch" id="font-switch"><button data-font="small" class="seg-btn">S</button><button data-font="medium" class="seg-btn active">M</button><button data-font="large" class="seg-btn">L</button></div></div>
+                </div>
+                <div class="settings-group">
+                  <div class="settings-label">Window</div>
+                  <div class="settings-row"><span class="settings-key">Fullscreen</span><button id="toggle-fullscreen" class="btn btn-sm">Toggle Fullscreen</button></div>
+                  <div class="settings-row"><span class="settings-key">Always centered</span><span class="info-text" style="padding:0;font-size:.76rem">Window locks to screen size, non-resizable (set in tauri.conf.json)</span></div>
+                </div>
+                <div class="settings-group">
+                  <div class="settings-label">Data</div>
+                  <div class="settings-row"><span class="settings-key">Saved credentials</span><button id="clear-creds" class="btn btn-sm">Clear saved</button></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="view-inner hidden" data-view="credits">
+              <div class="card-header"><h1 class="card-title">Credits</h1><p class="card-desc">People behind pesu-rs</p></div>
+              <div class="stack">
+                <div class="credits-hero">
+                  <img class="credits-avatar" src="https://github.com/Vision2822.png" alt="Vision2822" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22><rect width=%22100%25%22 height=%22100%25%22 fill=%22%231e1e1e%22/><text x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22central%22 text-anchor=%22middle%22 fill=%22%23999%22 font-family=%22monospace%22 font-size=%2220%22>V</text></svg>'" />
+                  <div class="credits-hero-info">
+                    <div class="credits-name">Vision2822</div>
+                    <div class="credits-role">Creator & Maintainer</div>
+                    <a class="credits-link" href="https://github.com/Vision2822" target="_blank" rel="noopener">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.385.6.113.82-.26.82-.577v-2.165c-3.338.726-4.033-1.415-4.033-1.415-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                      github.com/Vision2822
+                    </a>
+                  </div>
+                </div>
+                <div class="credits-card">
+                  <div class="credits-title">pesu-rs v0.1.0</div>
+                  <div class="credits-sub">Unofficial, lightweight, minimal — built for PESU students</div>
+                  <div class="divider"></div>
+                  <div class="credits-list">
+                    <div class="credits-row"><span>Stack</span><span>Tauri + Rust + Vanilla JS</span></div>
+                    <div class="credits-row"><span>Scraper</span><span>reqwest + scraper + keyring</span></div>
+                  </div>
+                </div>
+                <div class="info-text" style="font-size:.75rem;opacity:.7">open source • no tracking • credentials stay on device</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+    </section>
+  </div>
+  <script src="main.js"></script>
+</body>
+</html>
